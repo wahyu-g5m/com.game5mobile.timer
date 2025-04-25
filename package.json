@@ -1,0 +1,13 @@
+{
+	"name": "com.game5mobile.timer",
+	"version": "1.0.0",
+	"displayName": "Timer",
+	"description": "Contain Timer component for regular timer & TimerPersistent component for across-section timer (utilize SecurePrefs)",
+	"unity": "2021.3",
+	"unityRelease": "4f1",
+	"author": {
+		"name": "Game5mobile",
+		"email": "info@game5mobile.com",
+		"url": "https://www.game5mobile.com"
+	}
+}
