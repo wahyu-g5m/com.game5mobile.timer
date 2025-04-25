@@ -1,0 +1,17 @@
+{
+    "name": "Five.Timer",
+    "rootNamespace": "",
+    "references": [
+        "GUID:2f65fe89b599fb546b50bf57d765757d",
+        "GUID:5cdf46b1ac6b7d74d85c0e2fa9a84410"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

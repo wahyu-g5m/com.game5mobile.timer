@@ -59,7 +59,7 @@ public class TimerPersistent : MonoBehaviour
     public void ResetTimer()
     {
         startTime = DateTime.Now;
-        SavedTimeStampSeconds = Utils.ConvertDateTimeToUnixTimeStamp(startTime);
+        SavedTimeStampSeconds = TimeUtils.ConvertDateTimeToUnixTimeStamp(startTime);
     }
 
     public void SetSavedTicksID(string id)
@@ -95,7 +95,7 @@ public class TimerPersistent : MonoBehaviour
 
         if (SecurePrefs.HasKey(savedTimeStampID))
         {
-            startTime = Utils.ConvertUnixTimeStampToDateTime(SavedTimeStampSeconds);
+            startTime = TimeUtils.ConvertUnixTimeStampToDateTime(SavedTimeStampSeconds);
         }
         else
         {
