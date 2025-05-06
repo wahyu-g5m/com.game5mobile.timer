@@ -1,106 +1,108 @@
-using Five;
 using Five.Enumerators;
 using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class TimerPersistent : MonoBehaviour
+namespace Five.Timers
 {
-    private bool isRunning;
-    private DateTime startTime;
-
-    [Tooltip("ID to get/set data in SecurePrefs")]
-    [SerializeField] private string savedTimeStampID;
-    [Tooltip("Timer duration in seconds")]
-    [SerializeField, Min(1)] private long duration;
-
-    private long SavedTimeStampSeconds
+    public class TimerPersistent : MonoBehaviour
     {
-        get => SecurePrefs.GetLong(savedTimeStampID);
-        set => SecurePrefs.SetLong(savedTimeStampID, value);
-    }
+        private bool isRunning;
+        private DateTime startTime;
 
-    public bool IsTimerComplete => ElapsedTime.TotalSeconds >= Duration.TotalSeconds;
-    public TimeSpan Duration => TimeSpan.FromSeconds(duration);
-    public TimeSpan ElapsedTime => DateTime.Now - startTime;
+        [Tooltip("ID to get/set data in SecurePrefs")]
+        [SerializeField] private string savedTimeStampID;
+        [Tooltip("Timer duration in seconds")]
+        [SerializeField, Min(1)] private long duration;
 
-    public UnityEvent Ended { get; } = new();
-
-    private void Awake()
-    {
-        if (string.IsNullOrEmpty(savedTimeStampID))
+        private long SavedTimeStampSeconds
         {
-            Debug.LogError("savedTicksID must not be empty", gameObject);
-            Debug.Break();
+            get => SecurePrefs.GetLong(savedTimeStampID);
+            set => SecurePrefs.SetLong(savedTimeStampID, value);
         }
 
-        Initialize();
-    }
+        public bool IsTimerComplete => ElapsedTime.TotalSeconds >= Duration.TotalSeconds;
+        public TimeSpan Duration => TimeSpan.FromSeconds(duration);
+        public TimeSpan ElapsedTime => DateTime.Now - startTime;
 
-    private void Update()
-    {
-        if (isRunning)
+        public UnityEvent Ended { get; } = new();
+
+        private void Awake()
         {
-            if (IsTimerComplete)
+            if (string.IsNullOrEmpty(savedTimeStampID))
             {
-                Ended.Invoke();
-                isRunning = false;
+                Debug.LogError("savedTicksID must not be empty", gameObject);
+                Debug.Break();
+            }
+
+            Initialize();
+        }
+
+        private void Update()
+        {
+            if (isRunning)
+            {
+                if (IsTimerComplete)
+                {
+                    Ended.Invoke();
+                    isRunning = false;
+                }
             }
         }
-    }
 
-    [ContextMenu("Run")]
-    public void Run()
-    {
-        StartCoroutine(RunCoroutine());
-    }
-
-    [ContextMenu("ResetTimer")]
-    public void ResetTimer()
-    {
-        startTime = DateTime.Now;
-        SavedTimeStampSeconds = TimeUtils.ConvertDateTimeToUnixTimeStamp(startTime);
-    }
-
-    public void SetSavedTicksID(string id)
-    {
-        savedTimeStampID = id;
-    }
-
-    public void SetDuration(TimeSpan timeSpan)
-    {
-        duration = (long)timeSpan.TotalSeconds;
-    }
-
-    private IEnumerator RunCoroutine()
-    {
-        yield return WaitFor.SecurePrefsInitialized();
-
-        if (!SecurePrefs.HasKey(savedTimeStampID))
+        [ContextMenu("Run")]
+        public void Run()
         {
-            ResetTimer();
+            StartCoroutine(RunCoroutine());
         }
 
-        isRunning = true;
-    }
-
-    private void Initialize()
-    {
-        StartCoroutine(InitializeCoroutine());
-    }
-
-    private IEnumerator InitializeCoroutine()
-    {
-        yield return WaitFor.SecurePrefsInitialized();
-
-        if (SecurePrefs.HasKey(savedTimeStampID))
-        {
-            startTime = TimeUtils.ConvertUnixTimeStampToDateTime(SavedTimeStampSeconds);
-        }
-        else
+        [ContextMenu("ResetTimer")]
+        public void ResetTimer()
         {
             startTime = DateTime.Now;
+            SavedTimeStampSeconds = TimeUtils.ConvertDateTimeToUnixTimeStamp(startTime);
+        }
+
+        public void SetSavedTicksID(string id)
+        {
+            savedTimeStampID = id;
+        }
+
+        public void SetDuration(TimeSpan timeSpan)
+        {
+            duration = (long)timeSpan.TotalSeconds;
+        }
+
+        private IEnumerator RunCoroutine()
+        {
+            yield return WaitFor.SecurePrefsInitialized();
+
+            if (!SecurePrefs.HasKey(savedTimeStampID))
+            {
+                ResetTimer();
+            }
+
+            isRunning = true;
+        }
+
+        private void Initialize()
+        {
+            StartCoroutine(InitializeCoroutine());
+        }
+
+        private IEnumerator InitializeCoroutine()
+        {
+            yield return WaitFor.SecurePrefsInitialized();
+
+            if (SecurePrefs.HasKey(savedTimeStampID))
+            {
+                startTime = TimeUtils.ConvertUnixTimeStampToDateTime(SavedTimeStampSeconds);
+            }
+            else
+            {
+                startTime = DateTime.Now;
+            }
         }
     }
 }

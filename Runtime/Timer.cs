@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Teners
+namespace Five.Timers
 {
     public class Timer : MonoBehaviour
     {
